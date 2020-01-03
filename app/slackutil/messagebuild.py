@@ -1,23 +1,21 @@
 from collections import OrderedDict
-
+import json
 
 class MessageBuilder:
 
-    def buildMessage(self, channel, class_name,
+    def buildMessage(self, channel,
                      image_url, losses: OrderedDict):
-        print(channel,class_name,image_url,losses)
-        return self.__BASE_MESSAGE.format(
+        return json.loads(self.__BASE_MESSAGE.format(
                                    channel,
-                                   class_name,
+                                   losses.get("predicted_class"),
                                    image_url,
-                                   self.buildList(losses))
+                                   self.buildList(losses)))
 
     def buildList(self, losses: OrderedDict):
-        del losses["predicted_class"]
         list_string = "\\n".join([
-            "\n{}. {}: {}%".format(i, tup[0], tup[1])
-            for i, tup in enumerate(losses.items())])
-        return list_string
+            "{}. {}: {}%".format(i, tup[0], tup[1])
+            for i, tup in enumerate(losses.items()) if i > 0])
+        return "\\n"+list_string
 
     __BASE_MESSAGE = """
     {{
@@ -60,7 +58,6 @@ if __name__ == "__main__":
     infered_dict = OrderedDict(infered_dict.items())
 
     print(MessageBuilder().buildMessage("Channel1",
-                                        "meme",
                                         "https://far-away.com/1.png",
                                         infered_dict))
 

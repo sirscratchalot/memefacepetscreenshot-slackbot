@@ -5,11 +5,12 @@ import app.slackmonitor
 import json
 import os
 import requests
-
+from app.slackutil import MessageBuilder
 from app.inference import LearnerInferer
 
 __learner: LearnerInferer = None
 __headers: dict = None
+__placeholder = "https://2gony02cb42x1yqacu25se4a1049-wpengine.netdna-ssl.com/wp-content/uploads/2017/10/Etimo-blue-transparent-200x81-2.png"
 
 
 def getImage(data: dict):
@@ -53,11 +54,21 @@ def handle_message(client: slack.WebClient,
         print("I got a linked  image!; ",
               mime.startswith("image"),
               ": ", image)
-        if image.startswith("https://files.slack"):
-            print(__learner.infer(image, __headers))
-        else:
-            print(__learner.infer(image))
-
+        infered = {}
+        message = {}
+        try:
+            if image.startswith("https://files.slack"):
+                infered = __learner.infer(image, __headers)
+                message = MessageBuilder().buildMessage(
+                                           channel, __placeholder, infered)
+            else:
+                infered = __learner.infer(image)
+                message = MessageBuilder().buildMessage(
+                                           channel, image, infered)
+            client.chat_postMessage(**message)
+        except Exception as e:
+            print(e)
+            print("Exception while checking image...")
     else:
         print("I got an image with no message!: ", image)
 
