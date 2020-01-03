@@ -1,1 +1,1 @@
-import * from *
+from .slackmonitor import *
