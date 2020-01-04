@@ -28,4 +28,4 @@ def check_image():
     mime, encoding = mimetypes.guess_type(target_image)
     if mime is None or not mime.startswith("image"):
         return json.dumps(NO_MIME_TYPE_ERRO), 400
-    return inferer.infer(image_location=target_image), 200
+    return json.dumps(inferer.infer(image_location=target_image)), 200
