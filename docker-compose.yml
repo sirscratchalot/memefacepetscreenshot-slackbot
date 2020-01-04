@@ -1,0 +1,6 @@
+version: "2.1"
+services:
+  nextcloud:
+    image: memebot:latest
+    container_name: memebot
+    restart: unless-stopped
