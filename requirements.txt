@@ -1,4 +1,4 @@
-flask==1.0.2
+flask==2.3.2
 fastai==1.0.60
 slackclient>=2.5.0
 certifi
